@@ -39,21 +39,19 @@ Ubuntu（乌班图）、RedHat（红帽）、CentOS
 
 桥接模式
 
--   VMWare会虚拟一块网卡和真正的物理网卡就行桥接，这样，发到物理网卡的所有数据包就到了VMWare虚拟机，而由VMWare发出的数据包也会通过桥从物理网卡的那端发出。桥接网络是指本地物理网卡和虚拟网卡通过VMnet0虚拟交换机进行桥接。相当于在一个局域网内创立了一个单独的主机，他可以访问这个局域网内的所有的主机
+-   **VMWare会虚拟一块网卡和真正的物理网卡就行桥接，这样，发到物理网卡的所有数据包就到了VMWare虚拟机**，而由VMWare发出的数据包也会通过桥从物理网卡的那端发出。桥接网络是指本地物理网卡和虚拟网卡通过VMnet0虚拟交换机进行桥接。相当于在一个局域网内创立了一个单独的主机，他可以访问这个局域网内的所有的主机
     
 -   该模式下主机网卡和虚拟机网卡的IP地址处于同一个网段，子网掩码、网关、DNS等参数都相同
     
--   桥接模式下虚拟机和主机在网络上地位相等，可以理解为一台新的电脑
-    
+-   **桥接模式下虚拟机和主机在网络上地位相等，可以理解为一台新的电脑**
 
 ![在这里插入图片描述](image/1d7578518173c1a9f1a185e5d86f0234.png)
 
 NAT模式
 
--   虚拟系统会通过真实主机的网络来访问外网，而真实主机相当于有两个网卡：真实网卡和虚拟网卡，真实网卡相当于链接了现实世界的真实路由器，而虚拟网卡相当于链接一个虚拟交换机/路由器（这个虚拟交换机同时链接虚拟机和真实主机）,此时虚拟机想访问外网就必须通过真实主机IP地址，而外面看来也确实是真实主机的IP地址，实则是虚拟机访问的，完全看不到虚拟网络局域的内部形式。
+-   虚拟系统会通过真实主机的网络来访问外网，而真实主机相当于有两个网卡：真实网卡和虚拟网卡，真实网卡相当于链接了现实世界的真实路由器，而虚拟网卡相当于链接一个虚拟交换机/路由器（这个虚拟交换机同时链接虚拟机和真实主机）,**此时虚拟机想访问外网就必须通过真实主机IP地址，而外面看来也确实是真实主机的IP地址，实则是虚拟机访问的，完全看不到虚拟网络局域的内部形式。**
     
--   网络地址转换模式。虚拟机系统可以和外部系统通讯，不早造成IP冲突
-    
+-   **网络地址转换模式。虚拟机系统可以和外部系统通讯，不早造成IP冲突**
 
 ![在这里插入图片描述](image/71efae6504c62717d2e67e6398114df7.png)
 
@@ -584,6 +582,8 @@ date指令还可以设置日期
     date -s 字符串时间
     date -s "2021-6-20 16:44:30"
 
+![image-20240806103338743](image/image-20240806103338743.png)
+
 
 -   cal指令
 
@@ -594,6 +594,8 @@ date指令还可以设置日期
 
 
 * * *
+
+![image-20240806103422508](image/image-20240806103422508.png)
 
 ### 6.5搜索查找类
 
@@ -633,12 +635,188 @@ date指令还可以设置日期
 
     基本语法：locate 搜索文件
 
-
 特别说明：由于locate指令基于数据进行查询，所以第一次运行前，必须是使用updatedb指令创建locate数据库
+
+**补充：**
+
+当你看到 `-bash: locate: command not found` 这个错误时，意味着 `locate` 命令在你的系统中没有安装，或者没有被包含在环境变量 `PATH` 中。`locate` 是一个快速查找文件系统中文件位置的命令，它依赖于一个预先构建的数据库（通常是 `locatedb` 或 `mlocate.db`），而不是实时搜索整个文件系统。
+
+以下是一些解决这个问题的步骤：
+
+1. **检查 `locate` 是否已安装**：
+   在基于Debian的系统（如Ubuntu）上，你可以使用 `apt` 来检查 `locate` 是否已安装：
+
+   ```bash
+   sudo apt update  
+   sudo apt install mlocate  # mlocate 是 locate 的一个常见实现
+   ```
+
+   在基于RPM的系统（如CentOS、Fedora）上，你可以使用 `yum` 或 `dnf`：
+
+   ```bash
+   sudo yum install mlocate  # 对于较旧的系统  
+   sudo dnf install mlocate  # 对于较新的系统
+   ```
+
+2. **确保 `locate` 可用**：
+   安装完成后，你可以通过运行 `locate --version` 来检查 `locate` 是否正确安装并可用。
+
+3. **更新 `locate` 数据库**：
+   在第一次安装 `locate` 或在添加了大量新文件到系统后，你可能需要更新 `locate` 的数据库。这可以通过运行 `sudo updatedb` 来完成。
+
+4. **检查 `PATH` 环境变量**：
+   虽然 `locate` 通常安装在标准位置（如 `/usr/bin/locate`），但理论上如果 `PATH` 环境变量没有包含这个目录，你也可能会遇到 `command not found` 的错误。你可以通过运行 `echo $PATH` 来检查 `PATH` 环境变量。
+
+5. **使用其他搜索工具**：
+   如果你急需找到文件但 `locate` 不可用，你可以考虑使用 `find` 命令作为替代。`find` 命令比 `locate` 更慢，因为它会实时搜索整个文件系统（或指定的部分），但它非常灵活且功能强大。例如，要搜索名为 `profile` 的文件，你可以使用：
+
+   ```bash
+   find / -name profile 2>/dev/null
+   ```
+
+   注意：`/` 表示从根目录开始搜索，这可能会很慢。`2>/dev/null` 用于将权限拒绝等错误消息重定向到 `/dev/null`，避免它们干扰搜索结果。
+
+如果你遵循了上述步骤但仍然遇到问题，请检查你的系统文档或联系系统管理员以获取进一步的帮助。
+
+#### 补充：
+
+
+
+出错：locate bashrc locate: can not stat () `/var/lib/mlocate/mlocate.db': No such file or directory`
+
+
+
+出现这样的错误是因为 `locate` 命令依赖于一个预先构建的数据库 (`mlocate.db`)，该数据库默认情况下并未创建或更新。你可以使用 `updatedb` 命令来创建或更新这个数据库。以下是解决方法：
+
+1. **更新 `mlocate` 数据库**： 运行以下命令来创建或更新 `mlocate` 数据库：
+
+   ```
+   sudo updatedb
+   ```
+
+2. **再次使用 `locate` 命令**： 一旦数据库创建或更新完成，你就可以使用 `locate` 命令来查找文件了：
+
+   ```
+   locate bashrc
+   ```
+
+如果你还没有安装 `mlocate`，你可能需要先安装它。以下是安装和使用 `mlocate` 的步骤：
+
+1. **安装 `mlocate`**：
+
+   - 在Debian/Ubuntu系统上：
+
+     ```
+     sudo apt-get install mlocate
+     ```
+
+   - 在CentOS/Red Hat系统上：
+
+     ```
+     sudo yum install mlocate
+     ```
+
+2. **更新数据库**： 安装完成后，运行以下命令来更新数据库：
+
+   ```
+   sudo updatedb
+   ```
+
+3. **使用 `locate` 命令**： 数据库更新完成后，使用以下命令查找 `bashrc` 文件：
+
+   ```
+   locate bashrc
+   ```
+
+一般来说，`.bashrc` 文件通常位于用户的主目录下，可以直接使用 `find` 命令来查找：
+
+```
+find /home -name ".bashrc"
+```
+
+或者，直接查看当前用户主目录下的 `.bashrc` 文件：
+
+```
+ls -la ~/.bashrc
+```
+
+这样你就能找到 `bashrc` 文件的位置。
+
+![image-20240806104430164](image/image-20240806104430164.png)
+
+
+
+
 
 * * *
 
 -   which指令 ，可以查看某个指令在哪个目录下
+
+#### 补充：
+
+`which` 命令用于查找并显示某个命令所在的路径。它会在系统的 `PATH` 环境变量中搜索指定的命令，并返回该命令的完整路径。以下是如何使用 `which` 命令的一个例子：
+
+### 示例：查找 `bash` 命令的位置
+
+```
+which bash
+```
+
+输出可能如下：
+
+```
+/bin/bash
+```
+
+这表明 `bash` 命令位于 `/bin` 目录下。
+
+### 示例：查找 `python` 命令的位置
+
+```
+which python
+```
+
+输出可能如下：
+
+```
+/usr/bin/python
+```
+
+这表明 `python` 命令位于 `/usr/bin` 目录下。
+
+### 示例：查找 `ls` 命令的位置
+
+```
+which ls
+```
+
+输出可能如下：
+
+```
+/bin/ls
+```
+
+这表明 `ls` 命令位于 `/bin` 目录下。
+
+### 示例：查找 `gcc` 命令的位置
+
+```
+which gcc
+```
+
+输出可能如下：
+
+```
+/usr/bin/gcc
+```
+
+这表明 `gcc` 命令位于 `/usr/bin` 目录下。
+
+通过使用 `which` 命令，你可以方便地找到系统中可执行文件的路径。
+
+![image-20240806104710531](image/image-20240806104710531.png)
+
+
 
 * * *
 
@@ -854,7 +1032,7 @@ rwx权限详解，难点
 
 -   第一种方式：+ 、- 、=变更权限
 
-u:所有者(是指文件或者是目录的拥有者) q：所有组 o：其他用户 a：所有人（u、g、o的总和）
+u:所有者(是指文件或者是目录的拥有者) g：所有组 o：其他用户 a：所有人（u、g、o的总和）
 
 1）chmod u=rwx,g=rx,o=x 文件/目录名
 
@@ -938,7 +1116,7 @@ r=4 w=2 x=1 rwx=4+2+1
 
 -   快速入门
     
-    -   设置任务调度文件：/etc/crontab
+    -   **设置任务调度文件：/etc/crontab**
         
     -   设置个人任务调度。执行crontab -e命令
         
@@ -1002,6 +1180,214 @@ r=4 w=2 x=1 rwx=4+2+1
     	第一步：crontab -e
     	第二步：0 2 * * * mysqldump -u root -proot testdb > /home/db.bak
 
+#### 补充：
+
+1.在 `crontab` 中，`*/1 * * * * ls -l /etc/ > /tmp/to.txt` 是一个用于计划任务调度的条目（cron job），它的含义如下：
+
+### 时间表字段解释
+
+`*/1 * * * *` 由五个字段组成，依次表示分钟、小时、日、月和星期。具体含义如下：
+
+- `*/1`：每隔 1 分钟执行一次任务。
+- `*`：每小时的每一分钟执行任务。
+- `*`：每个月的每一天执行任务。
+- `*`：每年的每个月执行任务。
+- `*`：每周的每一天执行任务。
+
+所以，`*/1 * * * *` 表示每分钟都执行一次任务。
+
+### 命令解释
+
+`ls -l /etc/ > /tmp/to.txt` 是实际要执行的命令部分。它的含义如下：
+
+- `ls -l /etc/`：列出 `/etc/` 目录下的所有文件和子目录，并以详细格式显示。
+- `> /tmp/to.txt`：将命令的输出重定向到 `/tmp/to.txt` 文件，覆盖该文件的内容。
+
+### 综合解释
+
+将这两个部分结合起来，整个 crontab 条目表示：
+
+每分钟执行一次 `ls -l /etc/` 命令，并将输出重定向到 `/tmp/to.txt` 文件。每次执行都会覆盖之前的内容。
+
+### 配置此条目
+
+要在当前用户的 crontab 文件中添加此条目，可以运行以下命令：
+
+```
+crontab -e
+```
+
+然后在打开的文件中添加这一行：
+
+```
+*/1 * * * * ls -l /etc/ > /tmp/to.txt
+```
+
+保存并退出编辑器。
+
+### 查看结果
+
+你可以查看 `/tmp/to.txt` 文件的内容来确认任务是否按预期执行：
+
+```
+cat /tmp/to.txt
+```
+
+每分钟该文件都会被更新，显示 `/etc/` 目录的详细列表。
+
+2.
+
+是的，在Linux和类Unix系统中，使用`>`符号进行重定向时，会将命令的输出写入指定的文件。
+
+具体来说，`>` 是输出重定向操作符，它将命令的标准输出（stdout）写入到指定的文件。如果该文件已经存在，它会覆盖该文件的内容。如果文件不存在，则会创建一个新文件。
+
+### 示例
+
+假设你想将 `ls -l /etc/` 命令的输出写入到一个名为 `to.txt` 的文件中，你可以这样做：
+
+```
+ls -l /etc/ > /tmp/to.txt
+```
+
+此命令将 `/etc/` 目录的详细列表写入到 `/tmp/to.txt` 文件中。每次执行该命令都会覆盖 `to.txt` 文件的内容。
+
+### 其他重定向操作符
+
+- **`>>`**：追加重定向。将命令的输出追加到文件的末尾，而不是覆盖文件的内容。
+
+  ```
+  ls -l /etc/ >> /tmp/to.txt
+  ```
+
+  这条命令将把 `ls -l /etc/` 的输出追加到 `/tmp/to.txt` 文件的末尾，而不会覆盖文件的现有内容。
+
+- **`<`**：输入重定向。将文件内容作为命令的输入。
+
+  ```
+  command < inputfile
+  ```
+
+  这条命令将 `inputfile` 的内容作为 `command` 的输入。
+
+- **`2>`**：标准错误重定向。将命令的错误输出（stderr）写入到指定的文件。
+
+  ```
+  ls /nonexistentdir 2> error.txt
+  ```
+
+  这条命令会尝试列出一个不存在的目录，并将错误信息写入到 `error.txt` 文件中。
+
+- **`&>`**：将标准输出和标准错误同时重定向到同一个文件（仅适用于一些Shell，如 `bash`）。
+
+  ```
+  command &> output.txt
+  ```
+
+  这条命令将 `command` 的标准输出和标准错误都写入到 `output.txt` 文件中。
+
+### 综合示例
+
+如果你希望同时将标准输出和标准错误都写入到同一个文件中，可以使用：
+
+```
+ls -l /etc/ > /tmp/to.txt 2>&1
+```
+
+或者使用 `&>`（在支持的Shell中）：
+
+```
+ls -l /etc/ &> /tmp/to.txt
+```
+
+通过这些重定向操作符，你可以灵活地管理命令的输入输出。
+
+3.
+
+`crontab` 命令可以直接使用，它允许你为当前用户设置定时任务，而不需要直接编辑 `/etc/crontab` 文件。每个用户都有自己的 `crontab` 文件，使用 `crontab` 命令可以方便地管理这些任务。
+
+### 使用 `crontab` 命令
+
+1. **编辑当前用户的 crontab 文件**： 使用以下命令可以编辑当前用户的 `crontab` 文件：
+
+   ```
+   crontab -e
+   ```
+
+   这将打开当前用户的 `crontab` 文件，你可以在其中添加、修改或删除任务。
+
+2. **查看当前用户的 crontab 任务**： 使用以下命令可以查看当前用户的 `crontab` 任务：
+
+   ```
+   crontab -l
+   ```
+
+3. **删除当前用户的 crontab 文件**： 使用以下命令可以删除当前用户的 `crontab` 文件：
+
+   ```
+   crontab -r
+   ```
+
+### `crontab` 文件的格式
+
+每个 `crontab` 文件包含定时任务的列表，每个任务一行，格式如下：
+
+```
+* * * * * command_to_run
+```
+
+五个时间字段分别表示分钟、小时、日期、月份和星期几，后面是要执行的命令。例如：
+
+```
+*/1 * * * * ls -l /etc/ > /tmp/to.txt
+```
+
+这表示每分钟执行一次 `ls -l /etc/` 命令，并将输出重定向到 `/tmp/to.txt`。
+
+### `/etc/crontab` 文件
+
+`/etc/crontab` 文件是系统范围内的定时任务配置文件，允许为不同的用户设置定时任务。它的格式稍有不同，包括一个用户字段。例如：
+
+```
+* * * * * root ls -l /etc/ > /tmp/to.txt
+```
+
+这表示每分钟以 `root` 用户的身份执行 `ls -l /etc/` 命令，并将输出重定向到 `/tmp/to.txt`。
+
+### 配置系统范围内的 crontab 任务
+
+除了 `crontab -e` 为当前用户设置定时任务外，还可以编辑系统范围内的 `crontab` 配置文件：
+
+1. **编辑 `/etc/crontab` 文件**： 直接使用文本编辑器（如 `nano` 或 `vi`）编辑 `/etc/crontab` 文件：
+
+   ```
+   sudo nano /etc/crontab
+   ```
+
+   或
+
+   ```
+   sudo vi /etc/crontab
+   ```
+
+2. **在 `/etc/cron.d/` 目录中添加文件**： 你还可以在 `/etc/cron.d/` 目录中添加自定义的 `crontab` 文件。例如，创建一个名为 `mycron` 的文件：
+
+   ```
+   sudo nano /etc/cron.d/mycron
+   ```
+
+   然后在文件中添加定时任务，如：
+
+   ```
+   */1 * * * * root ls -l /etc/ > /tmp/to.txt
+   ```
+
+通过以上方法，你可以灵活地管理用户级和系统级的定时任务。
+
+![image-20240806111143281](image/image-20240806111143281.png)
+
+![image-20240806111118149](image/image-20240806111118149.png)
+
+
 
 ### 8.2 at定时任务
 
@@ -1046,17 +1432,260 @@ r=4 w=2 x=1 rwx=4+2+1
 
 ![在这里插入图片描述](image/a21979e31e4d395ee3e8e688f00959fc.png)
 
+补充：
+
+`at` 命令用于在指定的将来时间运行一次性任务。与 `cron` 不同的是，`cron` 是用来安排周期性任务的，而 `at` 是用来安排一次性任务的。
+
+### 使用 `at` 命令的步骤和示例
+
+1. **安装 `at` 命令**（如果尚未安装）： 在一些系统上，可能需要先安装 `at` 命令：
+
+   ```
+   bash复制代码sudo apt-get install at   # Debian/Ubuntu 系统
+   sudo yum install at       # CentOS/Red Hat 系统
+   ```
+
+2. **启动 `atd` 服务**（如果尚未启动）： `at` 命令依赖于 `atd` 服务来调度任务。确保该服务正在运行：
+
+   ```
+   bash复制代码sudo systemctl start atd
+   sudo systemctl enable atd
+   ```
+
+3. **使用 `at` 命令调度任务**： `at` 命令的基本用法是 `at [时间]`。例如：
+
+   ```
+   bash
+   复制代码
+   echo "ls -l /etc/ > /tmp/to.txt" | at now + 1 minute
+   ```
+
+   这条命令安排了一次性任务，在一分钟后执行 `ls -l /etc/ > /tmp/to.txt`。
+
+### 具体示例
+
+#### 示例 1：安排在未来的某个时间执行任务
+
+安排在明天下午 2 点执行任务：
+
+```
+echo "echo 'Hello, World!' > /tmp/hello.txt" | at 2pm tomorrow
+```
+
+这条命令将在明天下午 2 点执行 `echo 'Hello, World!' > /tmp/hello.txt`，将字符串 "Hello, World!" 写入 `/tmp/hello.txt` 文件中。
+
+#### 示例 2：安排在未来的某个时间间隔后执行任务
+
+安排在 5 分钟后执行任务：
+
+```
+echo "touch /tmp/myfile.txt" | at now + 5 minutes
+```
+
+这条命令将在 5 分钟后执行 `touch /tmp/myfile.txt`，在 `/tmp` 目录下创建一个空文件 `myfile.txt`。
+
+#### 示例 3：使用文件作为输入调度任务
+
+将任务命令写入文件，并使用该文件作为输入：
+
+```
+echo "echo 'Task executed' > /tmp/task.txt" > mytask.sh
+at 3am tomorrow < mytask.sh
+```
+
+这将在明天凌晨 3 点执行 `mytask.sh` 文件中的命令，将字符串 "Task executed" 写入 `/tmp/task.txt` 文件中。
+
+### 查看和管理 `at` 任务
+
+1. **查看已调度的 `at` 任务**： 使用 `atq` 命令查看当前用户的所有 `at` 任务：
+
+   ```
+   atq
+   ```
+
+   输出示例：
+
+   ```
+   3   Wed Aug  6 14:00:00 2024 a user
+   4   Thu Aug  7 03:00:00 2024 a user
+   ```
+
+2. **删除已调度的 `at` 任务**： 使用 `atrm` 命令删除指定的 `at` 任务。例如，删除任务号为 3 的任务：
+
+   ```
+   atrm 3
+   ```
+
+### 时间格式
+
+`at` 命令接受多种时间格式，例如：
+
+- 具体时间：`at 14:00`
+- 相对时间：`at now + 5 minutes`
+- 日期和时间：`at 3pm Aug 7`
+- 自然语言描述：`at teatime`（约下午 4 点）
+
+通过这些示例和说明，你可以灵活地使用 `at` 命令安排一次性任务。
+
+#### 补充：
+
+`echo` 命令在Linux和Unix系统中用于将文本输出到标准输出（通常是终端）。它是一个非常基础且常用的命令，下面是一些详细的用法示例。
+
+### 基本用法
+
+```
+echo "Hello, World!"
+```
+
+这将输出 `Hello, World!`。
+
+### 输出变量值
+
+```
+my_var="Hello, Bash!"
+echo $my_var
+```
+
+这将输出 `Hello, Bash!`，因为 `$my_var` 是变量 `my_var` 的值。
+
+### 输出带换行符的文本
+
+默认情况下，`echo` 会在输出的末尾添加一个换行符。
+
+```
+echo "This is a line"
+echo "This is another line"
+```
+
+输出将是：
+
+```
+This is a line
+This is another line
+```
+
+### 输出不带换行符的文本
+
+**使用 `-n` 选项可以抑制输出末尾的换行符。**
+
+```
+echo -n "This is a line without a newline"
+echo "Next line"
+```
+
+输出将是：
+
+```
+This is a line without a newlineNext line
+```
+
+### 输出包含转义字符的文本
+
+**使用 `-e` 选项来启用转义字符，例如 `\n`（换行）、`\t`（制表符）等。**
+
+```
+echo -e "First Line\nSecond Line\tTabbed"
+```
+
+输出将是：
+
+```
+First Line
+Second Line	Tabbed
+```
+
+### 将文本输出到文件
+
+使用重定向符 `>` 将 `echo` 输出重定向到文件。
+
+```
+echo "This is a test line" > testfile.txt
+```
+
+这将创建一个名为 `testfile.txt` 的文件，并写入 `This is a test line`。如果文件已存在，将覆盖其内容。
+
+使用 `>>` 可以将文本追加到文件末尾，而不是覆盖。
+
+```
+echo "This is another line" >> testfile.txt
+```
+
+这将把 `This is another line` 追加到 `testfile.txt` 文件的末尾。
+
+### 输出带有特殊字符的文本
+
+如果要输出带有特殊字符的文本，可以使用引号来包裹文本。
+
+```
+echo "This is a $pecial string"
+```
+
+输出将是：
+
+```
+This is a $pecial string
+```
+
+因为 `$` 被视为普通字符。
+
+### 示例总结
+
+1. **简单输出**
+
+   ```
+   echo "Hello, World!"
+   ```
+
+2. **输出变量**
+
+   ```
+   name="John"
+   echo "Hello, $name"
+   ```
+
+3. **输出不带换行符**
+
+   ```
+   echo -n "This is on the same line"
+   echo " as this."
+   ```
+
+4. **输出带转义字符**
+
+   ```
+   echo -e "Line 1\nLine 2\n\tTabbed Line"
+   ```
+
+5. **重定向输出到文件**
+
+   ```
+   echo "This is a test line" > output.txt
+   echo "This is appended" >> output.txt
+   ```
+
+6. **输出带有特殊字符**
+
+   ```
+   echo "Price is \$100"
+   ```
+
+通过这些示例，你可以掌握 `echo` 命令的多种用法，满足在脚本和命令行中输出文本的不同需求。
+
+
+
+
+
 ## 九、Linux磁盘分区、挂载
 
 ### 9.1Linux分区
 
 -   原理介绍
-    -   1.  Linux来说无论有几个分区，分给哪一目录使用，它归根结底就只有一个根目录，一个独立且唯一的文件结构，Linux中每个分区都是用来组成整个文件系统的一部分
+    -   1.  Linux来说无论有几个分区，分给哪一目录使用，它归根结底就只有一个根目录，一个独立且唯一的文件结构，**Linux中每个分区都是用来组成整个文件系统的一部分**
         2.  Linux采用了一种叫”载入“的处理方法，它的整个文件系统包含了一整套的目录，且将一个分区和一个目录联系起来。这时要载入的一个分区将使它的存储空间在一个目录下获得
 
 ![在这里插入图片描述](image/586ed5ce49dc0e15f3c155f3fe5649a6.png)
 
--   硬盘shuo’ming
+-   硬盘说明
     
     -   Linux硬盘分IDE硬盘和SCSI硬盘，目前基本上是SCSI硬盘
     -   对于IDE硬盘，驱动驱动标识符为” hdx~ “，其中”hd“表明分区所在的设备类型，这里是指IDE硬盘了。”x“为盘号（a为基本盘，b为基本从属盘，c为辅助主盘，d为辅助从属盘），”~“代表分区，前四个分区用数字1到4表示，他们是主分区和拓展分区；从5开始就是逻辑分区。例，hda3表示为第一个IDE硬盘上的第三个主分区或拓展分区，hdb2表示为第二个IDE硬盘上的第二个主分区或拓展分区
@@ -1130,12 +1759,384 @@ r=4 w=2 x=1 rwx=4+2+1
 
 ![在这里插入图片描述](image/b0a4297a689fa0cb5eebf3078cab6088.png)
 
-用命令行挂载，重启后就会失效
+**用命令行挂载，重启后就会失效**
 
 -   5设置可以自动挂载
     
     -   永久挂载：通过修改/etc/fstab实现挂载
     -   添加完成后，执行mount -a立即生效
+
+#### ==补充：文件系统和挂载问题说明==
+
+**1.linux中文件系统解释一下，一个Linux系统有多少个文件系统，一个文件目录就是一个文件系统吗**
+
+
+
+在Linux系统中，文件系统的概念和文件目录的概念是相关但不同的。下面详细解释一下Linux文件系统以及文件目录与文件系统之间的关系。
+
+### 什么是文件系统
+
+文件系统是指操作系统用于管理和存储数据的结构和方法。它定义了如何在存储设备（如硬盘、SSD、光盘等）上组织、命名、存取和保护文件。常见的文件系统类型包括：
+
+- **ext4**（第四代扩展文件系统）：Linux系统中最常用的文件系统。
+- **ext3**（第三代扩展文件系统）：ext4的前身。
+- **ext2**（第二代扩展文件系统）：ext3的前身，没有日志功能。
+- **XFS**：高性能日志文件系统，适用于大型文件。
+- **Btrfs**：支持高级功能，如快照和子卷。
+- **FAT32**、**exFAT**：常用于外部存储设备，如U盘和SD卡。
+- **NTFS**：Windows系统的默认文件系统，但Linux也可以通过驱动程序进行读写操作。
+
+### 一个Linux系统有多少个文件系统
+
+一个Linux系统可以有多个文件系统，通常每个存储设备或分区可以有一个文件系统。每个文件系统可以挂载到系统的某个目录上，使得用户可以通过该目录访问文件系统中的文件和目录。
+
+### 文件目录与文件系统的关系
+
+文件目录是文件系统中的一种数据结构，用于组织和管理文件。文件目录是文件系统的一部分，但一个文件目录并不等同于一个文件系统。下面是一些关键点：
+
+- **根文件系统**：每个Linux系统都有一个根文件系统（即 `/`），它是文件系统层次结构的起点。根文件系统通常包含基本的系统目录，如 `/bin`、`/etc`、`/lib`、`/home`、`/var` 等。
+
+- **挂载点**：除了根文件系统外，还可以有其他文件系统，这些文件系统可以通过挂载点（mount point）连接到根文件系统。例如，一个独立的 `/home` 分区可以挂载到根文件系统的 `/home` 目录下。使用 `mount` 命令可以挂载文件系统：
+
+  ```
+  
+  sudo mount /dev/sda1 /mnt
+  ```
+
+  这会将设备 `/dev/sda1` 挂载到 `/mnt` 目录。
+
+- **`/etc/fstab` 文件**：Linux系统使用 `/etc/fstab` 文件来定义开机时自动挂载的文件系统。该文件包含各个文件系统的挂载信息，包括设备名称、挂载点、文件系统类型和挂载选项。
+
+### 示例
+
+假设你的Linux系统有一个硬盘，分成了几个分区，每个分区都有不同的文件系统：
+
+- `/dev/sda1`：根文件系统（ext4），挂载到 `/`。
+- `/dev/sda2`：独立的 `/home` 文件系统（ext4），挂载到 `/home`。
+- `/dev/sda3`：独立的 `/var` 文件系统（XFS），挂载到 `/var`。
+
+你可以查看当前挂载的文件系统及其挂载点，使用 `df -h` 命令：
+
+```
+df -h
+```
+
+输出示例：
+
+```
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1        50G   15G   33G  32% /
+/dev/sda2       100G   40G   60G  40% /home
+/dev/sda3        20G    5G   15G  25% /var
+```
+
+在这个例子中，系统有三个文件系统，每个文件系统挂载到不同的目录（根文件系统 `/`、用户目录 `/home` 和变量数据目录 `/var`）。
+
+### 总结
+
+- 一个Linux系统可以有多个文件系统，每个文件系统管理一个存储设备或分区。
+- 文件系统通过挂载点挂载到Linux的文件目录树上。
+- 文件目录是文件系统的一部分，但一个文件目录不等同于一个文件系统。
+- 文件系统的信息和挂载可以通过命令和配置文件查看和管理。
+
+通过理解文件系统和文件目录的关系，可以更好地管理和使用Linux系统的存储资源。
+
+
+
+**2.挂载点：除了根文件系统外，还可以有其他文件系统，这些文件系统可以通过挂载点（mount point）连接到根文件系统。例如，一个独立的 /home 分区可以挂载到根文件系统的 /home 目录下。使用 mount 命令可以挂载文件系统： bash 复制代码 sudo mount /dev/sda1 /mnt 这会将设备 /dev/sda1 挂载到 /mnt 目录。 /etc/fstab 文件：Linux系统使用 /etc/fstab 文件来定义开机时自动挂载的文件系统。该文件包含各个文件系统的挂载信息，包括设备名称、挂载点、文件系统类型和挂载选项。这样挂载有什么用和意义**
+
+
+
+挂载文件系统是管理和使用存储设备的重要步骤。在Linux系统中，挂载点和 `/etc/fstab` 文件的使用有多种实际用途和重要意义：
+
+### 挂载的用途和意义
+
+1. **访问不同存储设备**：
+   - 挂载允许操作系统访问和管理不同的存储设备（如硬盘、SSD、光盘、USB设备等）。每个设备可以包含一个文件系统，通过挂载到目录树中，使其内容可以通过文件路径访问。
+   - 例如，插入一个USB驱动器并挂载到 `/mnt/usb` 目录后，您可以通过访问 `/mnt/usb` 来查看和操作USB驱动器上的文件。
+2. **组织和管理文件系统**：
+   - 挂载点帮助组织和管理系统中的多个文件系统。通过将不同的文件系统挂载到特定的目录，可以为系统提供逻辑上的组织结构。
+   - 例如，可以将用户的主目录单独放在一个文件系统上（如 `/home`），将日志文件放在另一个文件系统上（如 `/var`），这有助于系统管理和性能优化。
+3. **分离不同的数据类型**：
+   - 不同的数据类型可以放在不同的分区和文件系统上，以提高系统的安全性和稳定性。例如，根文件系统可能包含操作系统的核心文件，而用户数据可以存储在独立的分区中。
+   - 如果某个分区发生故障或需要维护，其他分区的数据不会受到影响。
+4. **控制文件系统的特性**：
+   - 通过挂载选项，可以控制文件系统的行为。例如，可以在挂载时指定文件系统为只读模式，以防止对其进行写操作，保护重要数据。
+   - 挂载选项还可以启用或禁用特定的文件系统功能，如配额管理、访问控制列表（ACL）等。
+
+### `/etc/fstab` 文件的用途和意义
+
+1. **自动挂载文件系统**：
+
+   - `/etc/fstab` 文件定义了系统启动时自动挂载的文件系统。通过配置 `/etc/fstab`，可以确保每次启动时，所需的文件系统都自动挂载到正确的目录。
+   - 这减少了手动挂载的麻烦，确保系统稳定运行。
+
+2. **统一管理挂载配置**：
+
+   - `/etc/fstab` 提供了一个集中管理挂载配置的地方。所有的挂载信息（包括设备名称、挂载点、文件系统类型和挂载选项）都存储在一个文件中，方便系统管理员查看和修改。
+
+   - 示例 
+
+     ```
+     /etc/fstab
+     ```
+
+      文件内容：
+
+     ```
+     /dev/sda1  /      ext4  defaults  0  1
+     /dev/sda2  /home  ext4  defaults  0  2
+     /dev/sda3  /var   xfs   defaults  0  2
+     /dev/sdb1  /mnt/backup  ext4  defaults,noauto  0  2
+     ```
+
+     在这个示例中，根文件系统、用户主目录和变量数据目录分别挂载到 
+
+     ```
+     /
+     ```
+
+     、
+
+     ```
+     /home
+     ```
+
+      和 
+
+     ```
+     /var
+     ```
+
+     。
+
+3. **提高系统的灵活性和可维护性**：
+
+   - 使用 `/etc/fstab`，系统管理员可以灵活地添加、修改或删除文件系统挂载，而无需每次都手动执行挂载命令。
+   - 可以指定挂载选项，如 `noauto`（不自动挂载）、`ro`（只读挂载）等，来控制文件系统的行为，适应不同的使用场景。
+
+### 示例：手动挂载和 `/etc/fstab` 自动挂载
+
+#### 手动挂载
+
+假设有一个新的分区 `/dev/sda1`，你想挂载到 `/mnt/newdisk`：
+
+```
+sudo mount /dev/sda1 /mnt/newdisk
+```
+
+这将使你能够访问 `/dev/sda1` 上的文件，通过 `/mnt/newdisk` 目录。
+
+#### 自动挂载
+
+为了在系统启动时自动挂载，可以编辑 `/etc/fstab` 文件，添加以下行：
+
+```
+/dev/sda1  /mnt/newdisk  ext4  defaults  0  2
+```
+
+这样，每次系统启动时，`/dev/sda1` 都会自动挂载到 `/mnt/newdisk`。
+
+通过理解和利用挂载点和 `/etc/fstab` 文件，您可以更有效地管理和使用系统的存储资源，提高系统的灵活性、稳定性和安全性。
+
+
+
+3.**那我不需要将设备** /dev/sda1 挂载到 /mnt 目录啊， /dev/sda1 本身不就可以让我们访问了
+
+
+
+在Linux系统中，存储设备（如 `/dev/sda1`）本身并不能直接访问文件。必须将其挂载到文件系统的某个目录（挂载点）后，才能访问该设备上的文件和目录。以下是一些原因和详细解释：
+
+### 为什么需要挂载
+
+1. **设备文件 vs. 文件系统**：
+   - 设备文件（如 `/dev/sda1`）只是表示硬盘分区的接口，表示物理设备或分区，并不直接提供文件和目录的结构。
+   - 文件系统是一种存储和组织文件的方式。它提供了目录结构、文件属性和访问控制等功能。要访问存储在设备上的文件，必须通过文件系统进行管理。
+2. **挂载点提供访问路径**：
+   - 挂载是将设备的文件系统与现有目录结构关联起来的过程。挂载点是一个现有的空目录，用于访问挂载设备上的文件和目录。
+   - 例如，将 `/dev/sda1` 挂载到 `/mnt` 目录后，设备上的文件和目录将出现在 `/mnt` 目录下。
+3. **统一文件系统层次结构**：
+   - Linux使用单一的目录树结构，从根目录（`/`）开始，所有文件和目录都是这个树的一部分。通过挂载，可以将不同的存储设备集成到这个统一的层次结构中。
+   - 例如，可以将一个硬盘分区挂载到 `/home`，另一个分区挂载到 `/var`，实现不同数据的分区存储。
+
+### 挂载的实际操作
+
+1. **手动挂载**： 使用 `mount` 命令可以手动挂载设备到指定目录：
+
+   ```
+   bash
+   复制代码
+   sudo mount /dev/sda1 /mnt
+   ```
+
+   挂载后，可以通过 `/mnt` 目录访问 `/dev/sda1` 上的文件和目录。
+
+2. **查看挂载信息**： 使用 `df -h` 或 `mount` 命令查看当前挂载的文件系统和挂载点：
+
+   ```
+   df -h
+   ```
+
+   或
+
+   ```
+   mount
+   ```
+
+3. **自动挂载**： 为了在系统启动时自动挂载设备，可以编辑 `/etc/fstab` 文件，添加挂载信息。例如：
+
+   ```
+   /dev/sda1  /mnt  ext4  defaults  0  2
+   ```
+
+   这将确保在系统启动时自动挂载 `/dev/sda1` 到 `/mnt`。
+
+### 示例解释
+
+假设有一个分区 `/dev/sda1`，使用 `ext4` 文件系统，你需要将其挂载到 `/mnt` 目录。
+
+#### 1. 创建挂载点
+
+如果挂载点目录不存在，可以创建一个：
+
+```
+sudo mkdir /mnt
+```
+
+#### 2. 手动挂载
+
+挂载设备到挂载点：
+
+```
+sudo mount /dev/sda1 /mnt
+```
+
+现在可以通过 `/mnt` 访问该设备上的文件。
+
+#### 3. 自动挂载
+
+编辑 `/etc/fstab` 文件，添加如下行以便系统启动时自动挂载：
+
+```
+/dev/sda1  /mnt  ext4  defaults  0  2
+```
+
+保存并关闭文件。
+
+#### 4. 检查挂载
+
+确保挂载成功，可以使用以下命令：
+
+```
+df -h
+```
+
+你应该能看到 `/dev/sda1` 挂载到 `/mnt`。
+
+### 总结
+
+挂载是将设备文件系统与Linux目录结构关联起来的过程，是访问和管理存储设备上文件的必要步骤。通过手动挂载或配置自动挂载，可以方便地访问和管理系统中的各种存储设备。
+
+
+
+**4./dev/sda1意思是sda1是系统自动识别添加的，我们不能直接访问，还要把他挂载到其他目录，一般挂载到哪，还是任意挂载，比如我创建一个目录，能把他挂载到这个目录下吗**
+
+
+
+ChatGPT
+
+是的，`/dev/sda1` 是系统自动识别并分配的设备文件，表示第一个SCSI/SATA硬盘的第一个分区。为了访问这个分区上的文件，你需要将其挂载到一个目录。
+
+### 挂载点选择
+
+你可以将设备挂载到任意一个现有的空目录，通常这些目录被称为挂载点。挂载点可以是系统中已有的目录，也可以是你自己创建的目录。选择挂载点通常根据具体需求和系统的结构来决定。
+
+### 常见挂载点
+
+1. **系统目录**：
+
+   - **/mnt**：通常用于临时挂载设备。例如，挂载一个临时使用的外部硬盘或ISO镜像文件。
+   - **/media**：通常用于自动挂载可移动媒体设备，如USB驱动器和光盘。在现代Linux系统中，插入USB驱动器时，系统会自动挂载到 `/media` 下的一个子目录。
+   - **/home**：可以将一个独立分区挂载到 `/home` 目录，以便所有用户的主目录都位于该分区上。
+   - **/var**：可以将一个独立分区挂载到 `/var` 目录，以存储系统日志和其他经常变动的数据。
+   - **/boot**：可以将一个独立分区挂载到 `/boot` 目录，以存储引导加载程序和内核文件。
+
+2. **自定义目录**：
+
+   - 你可以创建任意目录作为挂载点。例如，如果你创建一个名为 
+
+     ```
+     /data
+     ```
+
+      的目录，你可以将分区挂载到这个目录上：
+
+     ```
+     sudo mkdir /data
+     sudo mount /dev/sda1 /data
+     ```
+
+### 示例操作步骤
+
+#### 1. 创建挂载点目录
+
+假设你想将 `/dev/sda1` 挂载到一个新创建的目录 `/data`，你可以先创建这个目录：
+
+```
+sudo mkdir /data
+```
+
+#### 2. 手动挂载
+
+将设备挂载到创建的目录：
+
+```
+sudo mount /dev/sda1 /data
+```
+
+现在你可以通过 `/data` 目录访问 `/dev/sda1` 上的文件。
+
+#### 3. 自动挂载（编辑 `/etc/fstab`）
+
+如果你希望在系统启动时自动挂载，可以编辑 `/etc/fstab` 文件，添加一行挂载信息：
+
+```
+/dev/sda1  /data  ext4  defaults  0  2
+```
+
+注意：请确保文件系统类型（如 `ext4`）与实际的设备文件系统类型匹配。
+
+#### 4. 验证挂载
+
+使用 `df -h` 命令检查挂载情况：
+
+```
+df -h
+```
+
+输出中应该显示 `/dev/sda1` 挂载到 `/data`。
+
+### 挂载注意事项
+
+1. **挂载点必须是一个空目录**： 挂载点必须是一个现有的空目录。挂载操作会覆盖目录中已有的内容，使其不可见，直到设备卸载为止。
+
+2. **卸载设备**： 要卸载设备，可以使用 `umount` 命令：
+
+   ```
+   sudo umount /data
+   ```
+
+3. **确保文件系统一致性**： 在编辑 `/etc/fstab` 文件时，确保所有配置正确无误，以防止系统启动时挂载失败。
+
+### 总结
+
+- `/dev/sda1` 表示设备文件，需要挂载到一个目录才能访问其上的文件。
+- 可以将设备挂载到任何现有的空目录，包括系统默认的挂载点或自定义的目录。
+- 手动挂载可以临时访问设备，而自动挂载配置在 `/etc/fstab` 文件中，可以实现系统启动时自动挂载。
+
+通过以上步骤和注意事项，你可以灵活地管理和访问Linux系统中的存储设备。
+
+
 
 ### 9.3磁盘情况查询
 
@@ -1261,6 +2262,113 @@ r=4 w=2 x=1 rwx=4+2+1
         
     -   ![在这里插入图片描述](image/5d8e59e3ccd1d183ee5ed1052536ba1d.png)
         
+
+#### 补充：以上是windows，下面看Linux
+
+在Linux系统中，`ipconfig` 命令是不存在的。`ipconfig` 是Windows系统中的网络配置命令。在Linux中，您可以使用不同的工具和命令来完成类似的任务。对于查看DNS缓存的内容，可以使用 `systemd-resolve` 或 `dig` 等命令。
+
+### 查看DNS缓存
+
+1. **使用 `systemd-resolve`**： 如果您的系统使用 `systemd-resolved` 管理DNS缓存，可以使用以下命令查看DNS缓存：
+
+   ```
+   systemd-resolve --statistics
+   systemd-resolve --status
+   ```
+
+2. **使用 `resolvectl`**（现代 `systemd` 系统）： 在一些系统中，`resolvectl` 命令用于替代 `systemd-resolve`：
+
+   ```
+   resolvectl statistics
+   resolvectl status
+   ```
+
+### 安装和使用 `nscd` 服务
+
+另一种方法是使用 `nscd`（Name Service Cache Daemon）来管理DNS缓存。首先，您需要安装 `nscd`：
+
+1. **安装 `nscd`**： 在Debian/Ubuntu系统上：
+
+   ```
+   sudo apt-get install nscd
+   ```
+
+   在CentOS/Red Hat系统上：
+
+   ```
+   sudo yum install nscd
+   ```
+
+2. **启动 `nscd` 服务**：
+
+   ```
+   sudo systemctl start nscd
+   sudo systemctl enable nscd
+   ```
+
+3. **查看DNS缓存**： 使用 `nscd` 命令查看DNS缓存：
+
+   ```
+   sudo nscd -g
+   ```
+
+### 查询特定DNS信息
+
+1. **使用 `dig` 命令**： `dig` 是一个强大的DNS查询工具，可以用于查询特定域名的DNS记录：
+
+   ```
+   dig example.com
+   ```
+
+2. **使用 `host` 命令**： `host` 命令也是一个简单的DNS查询工具：
+
+   ```
+   host example.com
+   ```
+
+### 查看网络配置信息
+
+虽然 `ipconfig` 不存在，但您可以使用其他命令查看网络配置信息：
+
+1. **使用 `ifconfig` 命令**：
+
+   ```
+   ifconfig
+   ```
+
+   注意：在某些现代Linux发行版中，`ifconfig` 可能被标记为过时，可以使用 `ip` 命令代替。
+
+2. **使用 `ip` 命令**：
+
+   ```
+   ip addr
+   ip link
+   ip route
+   ```
+
+### 示例：查看网络配置和DNS缓存
+
+```
+# 查看网络接口信息
+ip addr
+
+# 查看路由表
+ip route
+
+# 查看DNS解析器状态（适用于使用systemd的系统）
+systemd-resolve --status
+
+# 使用dig查询DNS记录
+dig example.com
+
+# 使用host查询DNS记录
+host example.com
+
+# 使用nscd查看缓存
+sudo nscd -g
+```
+
+通过这些命令，您可以在Linux系统中查看和管理网络配置及DNS缓存。
 
 ## 十一、进程管理
 
@@ -1417,6 +2525,98 @@ CMD
 
 ![在这里插入图片描述](image/f280a11e0d4b60cd2d2b37a8abd7660b.png)
 
+### 补充：ps和top区别
+
+`top` 和 `ps` 是两个在Linux系统中用于查看进程信息的常用命令，但它们有不同的功能和用法。以下是它们之间的主要区别和各自的特点：
+
+### `ps` 命令
+
+`ps`（process status）命令用于显示当前系统中进程的快照。它显示的是执行 `ps` 命令时的静态视图，适用于一次性查看进程信息。
+
+#### 常用选项
+
+- `ps -e` 或 `ps -A`：显示系统中的所有进程。
+- `ps -f`：显示完整格式的进程信息。
+- `ps aux`：显示所有进程的详细信息，包括所有用户的进程。
+
+#### 示例
+
+1. 显示所有进程：
+
+   ```
+   ps -e
+   ```
+
+2. 显示详细的进程信息：
+
+   ```
+   ps -ef
+   ```
+
+3. 显示所有进程的详细信息，包括所有用户的进程：
+
+   ```
+   ps aux
+   ```
+
+#### 输出示例
+
+```
+USER       PID  PPID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1     0  0.0  0.1  22560  1096 ?        Ss   10:00   0:01 /sbin/init
+root       456     1  0.0  0.2  45080  2500 ?        Ss   10:01   0:00 /usr/lib/systemd/systemd-journald
+```
+
+### `top` 命令
+
+`top` 命令用于动态地显示系统中进程的实时信息。它会持续刷新显示进程的状态，默认情况下每隔几秒更新一次。`top` 提供了一个交互式界面，可以对进程进行排序、过滤和管理。
+
+#### 常用操作
+
+- `top`：启动 `top` 命令。
+- 在 `top` 中按 `h`：显示帮助信息。
+- 在 `top` 中按 `k`：终止一个进程。
+- 在 `top` 中按 `u`：按用户过滤进程。
+- 在 `top` 中按 `M`：按内存使用排序。
+- 在 `top` 中按 `P`：按CPU使用排序。
+
+#### 示例
+
+1. 启动 
+
+   ```
+   top
+   ```
+
+   ：
+
+   ```
+   top
+   ```
+
+#### 输出示例
+
+```
+top - 10:10:34 up  1:10,  2 users,  load average: 0.10, 0.20, 0.30
+Tasks:  105 total,    1 running,  104 sleeping,    0 stopped,    0 zombie
+%Cpu(s):  0.3 us,  0.2 sy,  0.0 ni, 99.5 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :  2048000 total,  1024000 free,   512000 used,   512000 buff/cache
+KiB Swap:  1024000 total,   512000 free,   512000 used.  1536000 avail Mem
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 1234 root      20   0   1620M   520M   200M S   0.5  2.5   0:30.20 some_process
+ 2345 user      20   0    984M   120M    64M S   0.2  1.0   0:10.15 another_process
+```
+
+### 总结
+
+- **`ps`**：用于一次性查看系统中进程的静态信息。适用于获取当前时刻的进程状态快照。可以结合不同的选项（如 `-e`、`-f`、`aux` 等）来定制输出。
+- **`top`**：用于动态查看系统中进程的实时信息。提供了一个交互式界面，允许用户实时监控和管理进程。适用于持续观察系统资源使用和进程状态。
+
+这两个命令各有优势，`ps` 适合于获取快照和生成报告，而 `top` 则适合于实时监控和管理。根据具体需求选择合适的工具，可以更有效地进行系统管理和故障排除。
+
+
+
 ### 11.3查看进程树pstree
 
 -   基本语法
@@ -1427,7 +2627,8 @@ CMD
 
     -p	树状形式显示进程的pid
     -u	树状形式显示进程的所属用户
-    
+
+
 
 ## 十二、服务（service）管理
 
@@ -1526,7 +2727,7 @@ CMD
         systemctl [start | stop |restart |status ] 服务名
     
     
-    -   systemctl指令管理的服务咋/usr/lib/systemd/system中查看
+    -   systemctl指令管理的服务在/usr/lib/systemd/system中查看
 -   systemctl设置服务的自启动状态
     
         systemctl list-unit-files [|grep 服务名] (查看服务开机启动状态，grep可进行过滤)
@@ -1542,14 +2743,14 @@ CMD
         
         systemctl is-enabled firewalld  查看防火墙服务是否是自启的
     
-    
-    ​    
+    ​    ![image-20240806140902422](image/image-20240806140902422.png)
     ​    查看当前防火墙的状态，关闭防火墙和重启防火墙
     ​    systemctl status firewalld
+    ​    ![image-20240806142708952](image/image-20240806142708952.png)
+    ​    停止防火墙
+    ​    systemctl stop firewalld
     ​    
-        停止防火墙
-        systemctl stop firewalld
-        
+    
         启动防火墙、
         systemctl s
     
@@ -1653,11 +2854,11 @@ M
 
 以内存使用率排序
 
-N
+**N**
 
 以PID排序
 
-q
+**q**
 
 退出top
 
@@ -1673,7 +2874,9 @@ q
         案例3：指定系统状态更新的时间（每隔10秒自动更新）（默认的是3秒）
         top -d 10
     
+    top
     
+    ![image-20240806142926223](image/image-20240806142926223.png)
 
 ### 13.3监控网络状态
 
@@ -1696,13 +2899,13 @@ q
     
     -   是一种网络检测工具，它主要是用来检测远程主机是否正常，或是两部主机间的网线或网卡故障
 
-## 十四、RPM与YUM
+## ==十四、RPM与YUM(重点)==
 
 ### 14.1rpm包的管理
 
 -   介绍
     
-    -   rpm用于互联网下载包的打包及安装工具，它包含在某些LInux分发版中。它生成具有.RPM拓展名的文件。RPM是RedHat Package Manager （RedHat软件包管理工具）的缩写，类似windows的setup.ext，这一文件格式名称虽然打上了RedHat的标志，但理念是通用的。
+    -   **rpm用于互联网下载包的打包及安装工具**，它包含在某些LInux分发版中。它生成具有.RPM拓展名的文件。**RPM是RedHat Package Manager （RedHat软件包管理工具）的缩写，类似windows的setup.ext**，这一文件格式名称虽然打上了RedHat的标志，但理念是通用的。
     -   Linux的分发版都有采用（suse，redhat，centos等），可以说是公用的行业标准。
 -   rpm包的简单查询指令
     
@@ -1710,7 +2913,7 @@ q
     
         rpm -qa|grep xxx
         
-        查看当前系统是否安装firefoxrpm -qa | grep firefox
+        查看当前系统是否安装firefox  rpm -qa | grep firefox
         
     
     ![在这里插入图片描述](image/bd3d7c41efd905e74300f57b12218958.png)
@@ -1722,7 +2925,6 @@ q
         版本号：60.2.2-1
         适用操作系统：el7.centos.x86_64     表示centos7.x的64位系统
         			（如果似乎i686、i386表示32位系统，noarch表示通用）
-        
     
 -   rpm包的其它查询指令
     
@@ -1730,6 +2932,8 @@ q
     
         rpm -qa | more
         rpm -qa | grep xxx(如：rpm -qa | grep firefox)
+        
+        ![image-20240806144626893](image/image-20240806144626893.png)
         
     -   rpm -q 软件包名 查询软件包信息
     
@@ -1785,7 +2989,7 @@ q
 
 ### 14.2yum
 
--   _**介绍**_：Yum是一个Shell前端软件包管理器。基于RPM包管理，能够从指定的服务器自动下载RPM包并安装，可以自动处理依赖关系，并且一次安装所有依赖的软件包
+-   _**介绍**_：**Yum是一个Shell前端软件包管理器。基于RPM包管理，能够从指定的服务器自动下载RPM包并安装，可以自动处理依赖关系，并且一次安装所有依赖的软件包**
     
 -   **yum的基本指令**
     
@@ -1800,6 +3004,719 @@ q
         rpm -e firefox              先卸载centos中的firefox
         yum list | grep firefox		 查询firefox的软件
         yum install firefox			下载！
+
+# ==补充：==
+
+了解和使用 `rpm` 和 `yum` 是在 CentOS 和其他基于 RPM 的 Linux 发行版中管理软件包的基本技能。以下是对 `rpm` 和 `yum` 的详细入门教程。
+
+## 一、RPM 入门
+
+### 1. 什么是 RPM
+
+**RPM** (Red Hat Package Manager) 是一种用于在 Linux 系统上打包和管理软件的工具。RPM 包含了软件的二进制文件、库文件和配置文件，并能够管理软件的安装、升级和卸载。
+
+### 2. RPM 包的基本结构
+
+一个典型的 RPM 包名如下所示：
+
+```
+firefox-60.2.2-1.el7.centos.x86_64.rpm
+```
+
+- 名称：`firefox`
+- 版本号：`60.2.2-1`
+- 适用操作系统：`el7.centos.x86_64`（表示 CentOS 7.x 的 64 位系统）
+
+### 3. 查询 RPM 包
+
+#### 查询已安装的 RPM 包列表
+
+```
+rpm -qa | grep firefox
+```
+
+此命令将列出所有已安装的 RPM 包，并通过 `grep` 过滤出包含 "firefox" 的包。
+
+#### 查询软件包信息
+
+```
+rpm -q firefox
+```
+
+显示名为 `firefox` 的包的简要信息。
+
+```
+rpm -qi firefox
+```
+
+显示名为 `firefox` 的包的详细信息。
+
+#### 查询软件包中的文件
+
+```
+rpm -ql firefox
+```
+
+列出名为 `firefox` 的包中的所有文件。
+
+#### 查询文件所属的软件包
+
+```
+rpm -qf /usr/bin/firefox
+```
+
+查询 `/usr/bin/firefox` 文件属于哪个软件包。
+
+### 4. 安装和卸载 RPM 包
+
+#### 安装 RPM 包
+
+```
+rpm -ivh /path/to/package.rpm
+```
+
+参数说明：
+
+- `i`：安装
+- `v`：详细模式，显示安装过程
+- `h`：显示进度条
+
+#### 卸载 RPM 包
+
+```
+rpm -e firefox
+```
+
+删除 `firefox` 软件包。
+
+如果其他软件包依赖于要卸载的软件包，可以强制删除（不推荐）：
+
+```
+rpm -e --nodeps firefox
+```
+
+但这种操作可能导致依赖该包的其他软件无法运行。
+
+### 5. RPM 常用查询命令总结
+
+- 列出所有已安装的软件包：
+
+  ```
+  rpm -qa
+  ```
+
+- 查询已安装的软件包信息：
+
+  ```
+  rpm -qi 包名
+  ```
+
+- 列出软件包中的文件：
+
+  ```
+  rpm -ql 包名
+  ```
+
+- 查询文件所属的软件包：
+
+  ```
+  rpm -qf 文件路径
+  ```
+
+## 二、YUM 入门
+
+### 1. 什么是 YUM
+
+**YUM** (Yellowdog Updater, Modified) 是基于 RPM 的软件包管理器，能够从指定的仓库下载并安装 RPM 包，自动处理依赖关系，并且能够一次安装所有依赖的软件包。
+
+### 2. YUM 的基本用法
+
+#### 查询 YUM 仓库中的软件包
+
+```
+yum list | grep firefox
+```
+
+查询 YUM 仓库中包含 "firefox" 的软件包。
+
+#### 安装软件包
+
+```
+yum install firefox
+```
+
+从 YUM 仓库中下载并安装 `firefox` 软件包。
+
+#### 卸载软件包
+
+```
+yum remove firefox
+```
+
+卸载 `firefox` 软件包，并自动处理依赖关系。
+
+### 3. 使用 YUM 安装软件示例
+
+#### 安装 Firefox
+
+1. 卸载已安装的 Firefox（如果存在）：
+
+   ```
+   rpm -e firefox
+   ```
+
+2. 查询 YUM 仓库中的 Firefox 包：
+
+   ```
+   yum list | grep firefox
+   ```
+
+3. 安装 Firefox：
+
+   ```
+   yum install firefox
+   ```
+
+### 4. YUM 常用命令总结
+
+- 列出可用的软件包：
+
+  ```
+  yum list
+  ```
+
+- 安装软件包：
+
+  ```
+  yum install 包名
+  ```
+
+- 卸载软件包：
+
+  ```
+  yum remove 包名
+  ```
+
+- 更新所有软件包：
+
+  ```
+  yum update
+  ```
+
+- 清理缓存：
+
+  ```
+  yum clean all
+  ```
+
+通过以上步骤，您应该能够初步掌握 RPM 和 YUM 的使用方法，并能够在 CentOS 系统上管理软件包。通过进一步的实践，您可以更加熟练地使用这些工具。
+
+
+
+`rpmbuild` 等命令是 RPM 包管理工具中高级的一部分，用于构建和打包 RPM 包。下面我将介绍如何使用 `rpmbuild` 命令来创建 RPM 包，以及相关的基本步骤和示例。
+
+## 三、RPM 包的构建与管理
+
+### 1. 准备工作
+
+首先，确保安装了必要的工具和开发环境：
+
+```
+sudo yum install rpm-build rpmdevtools
+```
+
+### 2. 创建 RPM 构建环境
+
+使用 `rpmdev-setuptree` 命令来设置 RPM 构建环境：
+
+```
+rpmdev-setuptree
+```
+
+这将在您的主目录中创建一个 `rpmbuild` 目录结构：
+
+```
+~/rpmbuild/
+|-- BUILD
+|-- RPMS
+|-- SOURCES
+|-- SPECS
+|-- SRPMS
+```
+
+### 3. 编写 SPEC 文件
+
+SPEC 文件是 RPM 包的构建脚本，包含了关于软件包的详细信息和构建指令。创建一个名为 `helloworld.spec` 的 SPEC 文件，并放置在 `~/rpmbuild/SPECS` 目录下：
+
+```
+Name:           helloworld
+Version:        1.0
+Release:        1%{?dist}
+Summary:        A simple HelloWorld program
+
+License:        GPLv2+
+URL:            https://example.com/helloworld
+Source0:        helloworld-1.0.tar.gz
+
+BuildRequires:  gcc
+Requires:       glibc
+
+%description
+A simple HelloWorld program written in C.
+
+%prep
+%setup -q
+
+%build
+gcc -o helloworld helloworld.c
+
+%install
+mkdir -p %{buildroot}/usr/local/bin
+cp helloworld %{buildroot}/usr/local/bin/
+
+%files
+/usr/local/bin/helloworld
+
+%changelog
+* Fri Aug 06 2024 Your Name <you@example.com> - 1.0-1
+- First release
+```
+
+### 4. 准备源代码
+
+将您的源代码压缩成 `tar.gz` 格式，并放置在 `~/rpmbuild/SOURCES` 目录下。例如，一个简单的 `helloworld.c` 文件：
+
+```
+#include <stdio.h>
+
+int main() {
+    printf("Hello, World!\n");
+    return 0;
+}
+```
+
+创建 `tar.gz` 文件：
+
+```
+tar czvf ~/rpmbuild/SOURCES/helloworld-1.0.tar.gz helloworld.c
+```
+
+### 5. 构建 RPM 包
+
+使用 `rpmbuild` 命令构建 RPM 包：
+
+```
+rpmbuild -ba ~/rpmbuild/SPECS/helloworld.spec
+```
+
+### 6. 检查生成的 RPM 包
+
+构建完成后，生成的 RPM 包将位于 `~/rpmbuild/RPMS` 目录中。您可以使用以下命令检查生成的 RPM 包：
+
+```
+ls ~/rpmbuild/RPMS/x86_64/
+```
+
+### 7. 安装和测试 RPM 包
+
+使用 `rpm` 或 `yum` 命令安装生成的 RPM 包：
+
+```
+sudo rpm -ivh ~/rpmbuild/RPMS/x86_64/helloworld-1.0-1.el7.x86_64.rpm
+```
+
+安装后，您可以运行 `helloworld` 程序来测试：
+
+```
+/usr/local/bin/helloworld
+```
+
+### 总结
+
+通过以上步骤，您可以使用 `rpmbuild` 命令创建和管理 RPM 包。以下是总结的步骤：
+
+1. 安装 `rpm-build` 和 `rpmdevtools` 工具。
+
+2. 设置 RPM 构建环境：
+
+   ```
+   rpmdev-setuptree
+   ```
+
+3. 编写 SPEC 文件，并放置在 `~/rpmbuild/SPECS` 目录中。
+
+4. 将源代码打包成 `tar.gz` 文件，并放置在 `~/rpmbuild/SOURCES` 目录中。
+
+5. 使用 
+
+   ```
+   rpmbuild
+   ```
+
+    命令构建 RPM 包：
+
+   ```
+   rpmbuild -ba ~/rpmbuild/SPECS/helloworld.spec
+   ```
+
+6. 安装和测试生成的 RPM 包。
+
+通过这些步骤，您可以创建自定义的软件包，并在需要时轻松分发和安装。学习和使用 `rpmbuild` 工具可以帮助您更好地管理软件的打包和分发过程。
+
+下面我将详细介绍 RPM 包的构建过程，特别是使用 `rpmbuild` 工具来创建和管理 RPM 包。我会通过一个完整的示例来说明每一步的操作。
+
+## 四、案例：使用 `rpmbuild` 构建 RPM 包
+
+### 准备工作
+
+1. **安装必要的工具和开发环境**： 首先，确保您已经安装了 `rpm-build` 和 `rpmdevtools`：
+
+   ```
+   sudo yum install rpm-build rpmdevtools
+   ```
+
+2. **设置 RPM 构建环境**： 使用 `rpmdev-setuptree` 命令来设置 RPM 构建环境：
+
+   ```
+   rpmdev-setuptree
+   ```
+
+   这将在您的主目录中创建一个 `rpmbuild` 目录结构：
+
+   ```
+   ~/rpmbuild/
+   ├── BUILD
+   ├── RPMS
+   ├── SOURCES
+   ├── SPECS
+   └── SRPMS
+   ```
+
+### 编写 SPEC 文件
+
+SPEC 文件是 RPM 包的构建脚本，包含了关于软件包的详细信息和构建指令。我们将创建一个名为 `helloworld.spec` 的 SPEC 文件，并放置在 `~/rpmbuild/SPECS` 目录下。
+
+1. **创建源代码和压缩包**： 首先，创建一个简单的 C 程序 `helloworld.c`：
+
+   ```c
+   #include <stdio.h>
+   
+   int main() {
+       printf("Hello, World!\n");
+       return 0;
+   }
+   ```
+
+   将其打包成 `tar.gz` 文件：
+
+   ```
+   mkdir helloworld-1.0
+   mv helloworld.c helloworld-1.0/
+   tar czvf ~/rpmbuild/SOURCES/helloworld-1.0.tar.gz helloworld-1.0
+   ```
+
+2. **编写 SPEC 文件**： 在 `~/rpmbuild/SPECS` 目录下创建 `helloworld.spec` 文件，并写入以下内容：
+
+   ```
+   Name:           helloworld
+   Version:        1.0
+   Release:        1%{?dist}
+   Summary:        A simple HelloWorld program
+   
+   License:        GPLv2+
+   URL:            https://example.com/helloworld
+   Source0:        helloworld-1.0.tar.gz
+   
+   BuildRequires:  gcc
+   Requires:       glibc
+   
+   %description
+   A simple HelloWorld program written in C.
+   
+   %prep
+   %setup -q
+   
+   %build
+   gcc -o helloworld helloworld.c
+   
+   %install
+   mkdir -p %{buildroot}/usr/local/bin
+   cp helloworld %{buildroot}/usr/local/bin/
+   
+   %files
+   /usr/local/bin/helloworld
+   
+   %changelog
+   * Fri Aug 06 2024 Your Name <you@example.com> - 1.0-1
+   - First release
+   ```
+
+### 构建 RPM 包
+
+使用 `rpmbuild` 命令构建 RPM 包：
+
+```
+rpmbuild -ba ~/rpmbuild/SPECS/helloworld.spec
+```
+
+### 检查生成的 RPM 包
+
+构建完成后，生成的 RPM 包将位于 `~/rpmbuild/RPMS/x86_64` 目录中。您可以使用以下命令检查生成的 RPM 包：
+
+```
+ls ~/rpmbuild/RPMS/x86_64/
+```
+
+### 安装和测试 RPM 包
+
+使用 `rpm` 或 `yum` 命令安装生成的 RPM 包：
+
+```
+sudo rpm -ivh ~/rpmbuild/RPMS/x86_64/helloworld-1.0-1.el7.x86_64.rpm
+```
+
+安装后，您可以运行 `helloworld` 程序来测试：
+
+```
+/usr/local/bin/helloworld
+```
+
+### 详细解释 SPEC 文件内容
+
+- **Header部分**：包括包名、版本、发布号、摘要、许可证、URL和源代码信息。
+
+  ```
+  Name:           helloworld
+  Version:        1.0
+  Release:        1%{?dist}
+  Summary:        A simple HelloWorld program
+  
+  License:        GPLv2+
+  URL:            https://example.com/helloworld
+  Source0:        helloworld-1.0.tar.gz
+  ```
+
+- **BuildRequires和Requires**：指定构建和运行时所需的依赖包。
+
+  ```
+  BuildRequires:  gcc
+  Requires:       glibc
+  ```
+
+- **%description**：描述包的用途和功能。
+
+  ```
+  %description
+  A simple HelloWorld program written in C.
+  ```
+
+- **%prep**：准备阶段，通常用于解压源代码包。
+
+  ```
+  %prep
+  %setup -q
+  ```
+
+- **%build**：构建阶段，编译源代码。
+
+  ```
+  %build
+  gcc -o helloworld helloworld.c
+  ```
+
+- **%install**：安装阶段，将构建的文件复制到构建根目录。
+
+  ```
+  %install
+  mkdir -p %{buildroot}/usr/local/bin
+  cp helloworld %{buildroot}/usr/local/bin/
+  ```
+
+- **%files**：指定包中包含的文件。
+
+  ```
+  %files
+  /usr/local/bin/helloworld
+  ```
+
+- **%changelog**：变更日志，记录包的修改历史。
+
+  ```
+  %changelog
+  * Fri Aug 06 2024 Your Name <you@example.com> - 1.0-1
+  - First release
+  ```
+
+通过这些步骤，您可以使用 `rpmbuild` 工具创建和管理 RPM 包。掌握 SPEC 文件的编写和理解每个阶段的作用是构建 RPM 包的关键。通过这个示例，您应该能够创建一个简单的 RPM 包，并能够根据需要修改和扩展 SPEC 文件来适应更复杂的软件包。
+
+
+
+## 五、SPEC概述
+
+编写 SPEC 文件是创建 RPM 包的关键步骤。SPEC 文件描述了软件包的构建过程、安装过程以及包中包含的文件。下面是一个详细的快速入门指南，帮助您理解和编写 SPEC 文件。
+
+### SPEC 文件的基本结构
+
+一个基本的 SPEC 文件包括以下部分：
+
+1. **Header 部分**
+2. **%description 部分**
+3. **Package Preparation（%prep）部分**
+4. **Package Building（%build）部分**
+5. **Package Installation（%install）部分**
+6. **File Listing（%files）部分**
+7. **Changelog（%changelog）部分**
+
+### 1. Header 部分
+
+Header 部分包含了软件包的元数据信息，如名称、版本、发布号、摘要、许可证、URL 和源代码。
+
+```
+Name:           helloworld
+Version:        1.0
+Release:        1%{?dist}
+Summary:        A simple HelloWorld program
+
+License:        GPLv2+
+URL:            https://example.com/helloworld
+Source0:        helloworld-1.0.tar.gz
+```
+
+- `Name`：软件包的名称。
+- `Version`：软件包的版本。
+- `Release`：发布号，通常包括一个发行版标记（如 `%{?dist}`）。
+- `Summary`：软件包的简要描述。
+- `License`：软件包的许可证。
+- `URL`：项目主页的 URL。
+- `Source0`：源代码的文件名。
+
+### 2. %description 部分
+
+`%description` 部分提供了对软件包的详细描述。
+
+```
+%description
+A simple HelloWorld program written in C.
+```
+
+### 3. Package Preparation（%prep）部分
+
+`%prep` 部分用于准备构建环境，通常包括解压源代码包和应用补丁。
+
+```
+%prep
+%setup -q
+```
+
+- `%setup`：解压源代码包。`-q` 选项表示静默模式，不显示解压过程。
+
+### 4. Package Building（%build）部分
+
+`%build` 部分用于编译源代码。
+
+```
+%build
+gcc -o helloworld helloworld.c
+```
+
+- 在这个例子中，我们使用 `gcc` 编译 C 源代码。
+
+### 5. Package Installation（%install）部分
+
+`%install` 部分用于将编译好的文件安装到构建根目录。
+
+```
+%install
+mkdir -p %{buildroot}/usr/local/bin
+cp helloworld %{buildroot}/usr/local/bin/
+```
+
+- `%{buildroot}`：RPM 的构建根目录，所有安装文件都应该放在这个目录中。
+
+### 6. File Listing（%files）部分
+
+`%files` 部分指定软件包中包含的文件。
+
+```
+%files
+/usr/local/bin/helloworld
+```
+
+- 在这个例子中，我们指定了 `helloworld` 可执行文件的位置。
+
+### 7. Changelog（%changelog）部分
+
+`%changelog` 部分记录软件包的修改历史。
+
+```
+%changelog
+* Fri Aug 06 2024 Your Name <you@example.com> - 1.0-1
+- First release
+```
+
+### 示例：完整的 SPEC 文件
+
+```
+Name:           helloworld
+Version:        1.0
+Release:        1%{?dist}
+Summary:        A simple HelloWorld program
+
+License:        GPLv2+
+URL:            https://example.com/helloworld
+Source0:        helloworld-1.0.tar.gz
+
+BuildRequires:  gcc
+Requires:       glibc
+
+%description
+A simple HelloWorld program written in C.
+
+%prep
+%setup -q
+
+%build
+gcc -o helloworld helloworld.c
+
+%install
+mkdir -p %{buildroot}/usr/local/bin
+cp helloworld %{buildroot}/usr/local/bin/
+
+%files
+/usr/local/bin/helloworld
+
+%changelog
+* Fri Aug 06 2024 Your Name <you@example.com> - 1.0-1
+- First release
+```
+
+### 构建 RPM 包
+
+1. **准备源代码和 SPEC 文件**：
+
+   - 将 `helloworld.c` 和 `helloworld-1.0.tar.gz` 放置在 `~/rpmbuild/SOURCES` 目录下。
+   - 将 `helloworld.spec` 放置在 `~/rpmbuild/SPECS` 目录下。
+
+2. **运行 `rpmbuild` 命令**：
+
+   ```
+   rpmbuild -ba ~/rpmbuild/SPECS/helloworld.spec
+   ```
+
+3. **检查生成的 RPM 包**： 生成的 RPM 包将位于 `~/rpmbuild/RPMS/x86_64/` 目录中。
+
+4. **安装和测试 RPM 包**：
+
+   ```
+   sudo rpm -ivh ~/rpmbuild/RPMS/x86_64/helloworld-1.0-1.el7.x86_64.rpm
+   /usr/local/bin/helloworld
+   ```
+
+通过以上步骤，您可以创建一个简单的 RPM 包，并能够理解和编写基本的 SPEC 文件。随着经验的积累，您可以进一步学习和使用更高级的 SPEC 文件功能，如处理复杂的依赖关系、使用补丁、定义宏等。
+
+
+
+
 
 ## 参考
 
