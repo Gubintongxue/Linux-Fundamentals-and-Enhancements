@@ -719,8 +719,8 @@ https://blog.csdn.net/wei198621/article/details/114956502
 ​    drwxr-xr-x. 4 root root    4096 Mar  9 07:22 shell
 ​    -rw-r--r--. 1 root root 6510585 Mar 18 22:28 shell2.zip
 ​    
-    [root@shell37 shell2]# zip -r shell2.zip ./shell/
-    
+​    [root@shell37 shell2]# zip -r shell2.zip ./shell/
+​    
     [root@shell37 shell2]# ll
     total 6364
     drwxr-xr-x. 4 root root    4096 Mar  9 07:22 shell
@@ -805,12 +805,12 @@ https://blog.csdn.net/wei198621/article/details/114956502
 ​    -rw-r--r--. 1 fox monster 0 Mar 18 23:04 ok.txt
 ​    [fox@shell37 ~]$ 
 ​    
-    [root@shell37 ~]# clear
-    [root@shell37 ~]# groupadd fruit
-    [root@shell37 ~]# touch orange.txt
-    [root@shell37 ~]# ll
-    [root@shell37 ~]# chgrp fruit orange.txt 
-    [root@shell37 ~]# ll
+​    [root@shell37 ~]# clear
+​    [root@shell37 ~]# groupadd fruit
+​    [root@shell37 ~]# touch orange.txt
+​    [root@shell37 ~]# ll
+​    [root@shell37 ~]# chgrp fruit orange.txt 
+​    [root@shell37 ~]# ll
 
 
 ### P043\_韩顺平图解Linux全面升级\_修改所在组 04:15
@@ -1868,14 +1868,14 @@ https://blog.csdn.net/wei198621/article/details/115052757
 ​    B3=`expr $1 + $2`
 ​    echo "$B3"
 ​    
-    [root@shell38 shcode]# sh expresh.sh 11 22
-    res11=20
-    res12=20
-    5
-    res13=20
-    33
-    33
-    33
+​    [root@shell38 shcode]# sh expresh.sh 11 22
+​    res11=20
+​    res12=20
+​    5
+​    res13=20
+​    33
+​    33
+​    33
 
 
 ### P097\_韩顺平图解Linux全面升级\_条件判断 12:51
@@ -2210,7 +2210,21 @@ https://blog.csdn.net/wei198621/article/details/115220528
 
 ### P118\_韩顺平图解Linux全面升级\_日志服务原理图 04:30
 
-![在这里插入图片描述](https://i-blog.csdnimg.cn/blog_migrate/de0d8ee9ca1b45f331133ce3d9ad83de.png)![在这里插入图片描述](https://i-blog.csdnimg.cn/blog_migrate/33e8ab0002bd3c33b5b46169b0095b0e.png)
+![在这里插入图片描述](https://i-blog.csdnimg.cn/blog_migrate/de0d8ee9ca1b45f331133ce3d9ad83de.png)
+
+#### 补充：
+
+在Unix和类Unix系统（包括Linux）中，`ps`命令是用来显示当前系统中活动的进程信息的非常强大的工具。`ps aux`是一个常用的选项组合，用于以用户友好的方式列出系统上几乎所有的进程信息。这里的`aux`实际上是三个不同选项的组合，它们分别表示：
+
+- `a`：显示所有用户的进程（包括其他用户的进程）。默认情况下，`ps`仅显示与当前终端会话相关联的进程。加上`a`选项后，`ps`会列出所有用户的所有终端进程。
+- `u`：以用户为中心的格式显示进程信息。这个选项使得输出更加易于阅读，因为它会提供关于每个进程的详细用户信息，包括用户ID（UID）、CPU使用率、内存使用率、进程状态、控制终端等。这通常与`f`（完全格式）选项结合使用来提供进程树视图，但在`ps aux`中，`u`单独使用，以列表形式展示信息。
+- `x`：显示没有控制终端的进程。在Unix系统中，许多系统服务进程和守护进程（daemon）并不直接关联到任何特定的用户终端。使用`x`选项，这些进程也会被`ps`列出，从而可以监控系统的所有活动进程，不仅仅是那些与用户终端相关联的进程。
+
+因此，`ps aux`命令组合使用这三个选项，以用户友好的方式列出系统上所有用户的所有进程，包括那些没有直接关联到终端的进程。这种输出格式非常适合于快速查看系统上的活动进程及其状态。
+
+
+
+![在这里插入图片描述](https://i-blog.csdnimg.cn/blog_migrate/33e8ab0002bd3c33b5b46169b0095b0e.png)
 
     [root@leoCentOS8 log]# ps aux |grep 'rsyslog' |grep -v "grep"
     root        1303  0.0  0.3 226672  6456 ?        Ssl  12:03   0:00 /usr/sbin/rsyslogd -n
@@ -2239,8 +2253,69 @@ https://blog.csdn.net/wei198621/article/details/115220528
     # Save boot messages also to boot.log
     local7.*                                                /var/log/boot.log
 
+####     补充：
 
-​    
+让我们详细解释一下 `ps aux | grep "rsyslog" | grep -v "grep"` 命令的每一部分以及它的输出。
+
+### 命令详解
+
+1. **ps aux**： `ps` 是一个用于显示当前进程状态的命令。`aux` 是三个选项的组合，用于获取所有用户的所有进程的信息。
+
+   - `a`：显示所有用户的所有进程（不仅仅是当前终端的进程）。
+   - `u`：以用户为中心的格式显示进程信息。
+   - `x`：显示没有控制终端的进程（即后台进程）。
+
+   这个命令将列出系统中所有正在运行的进程。
+
+2. **grep "rsyslog"**： `grep` 是一个文本搜索工具，用于匹配特定的模式。在这里，它用于过滤出包含字符串 "rsyslog" 的行。也就是说，它将筛选出所有运行的进程中包含 "rsyslog" 字符串的那些进程。
+
+3. **grep -v "grep"**： **`grep -v` 用于反向匹配，即排除包含特定模式的行。在这里，它用于排除包含字符串 "grep" 的行。**由于前一个 `grep` 命令本身会出现在 `ps` 的输出中，所以使用这个命令来排除这一行，以确保只显示实际的 `rsyslog` 进程。
+
+### 综合解释
+
+整个命令的目的是列出所有与 `rsyslog` 相关的进程，同时排除 `grep` 命令本身的进程。
+
+```
+ps aux | grep "rsyslog" | grep -v "grep"
+```
+
+### 输出解释
+
+```
+root       620  0.0  0.3 308640  5844 ?        Ssl  Jun24   3:15 /usr/sbin/rsyslogd -n
+```
+
+- **root**：进程的所有者是 `root` 用户。
+
+- **620**：进程ID (PID) 是 620。
+
+- **0.0**：进程使用的CPU百分比。
+
+- **0.3**：进程使用的内存百分比。
+
+- **308640**：进程使用的虚拟内存大小（以 KB 为单位）。
+
+- **5844**：进程使用的物理内存大小（驻留集大小，以 KB 为单位）。
+
+- **?**：进程的控制终端。`?` 表示这个进程没有控制终端。
+
+- Ssl
+
+  ：进程状态和标志。
+
+  - `S`：进程处于休眠状态。
+  - `s`：进程是会话的领导。
+  - `l`：进程具有多线程。
+
+- **Jun24**：进程启动的日期。
+
+- **3:15**：进程累计的CPU时间（小时:分钟）。
+
+- **/usr/sbin/rsyslogd -n**：进程运行的命令和参数，表示 `rsyslog` 守护进程正在运行，并使用 `-n` 参数。
+
+### 进一步操作
+
+通过这种方式，您可以轻松识别并检查与 `rsyslog` 相关的进程。如果需要进一步管理或调试这些进程，您可以使用其他 `ps` 和 `grep` 组合或其他系统工具来获取更多详细信息。
 
 ### P120\_韩顺平图解Linux全面升级\_自定义日志服务 05:24
 
